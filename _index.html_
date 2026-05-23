@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Absensi X10 SMAN 1 Cibinong</title>
+<style>
+body{font-family:Arial, sans-serif;background:#f4f6f9;margin:0;padding:0}
+header{background:#2c3e50;color:white;padding:16px;text-align:center}
+.container{padding:16px}
+table{width:100%;border-collapse:collapse;background:white}
+th,td{border:1px solid #ddd;padding:8px;text-align:center}
+th{background:#34495e;color:white}
+.btn{padding:6px 10px;border:none;border-radius:6px;cursor:pointer}
+.present{background:#2ecc71;color:white}
+.absent{background:#e74c3c;color:white}
+.sick{background:#f1c40f}
+.permit{background:#3498db;color:white}
+.photo{background:#9b59b6;color:white}
+.small{font-size:12px}
+img{width:40px;height:40px;object-fit:cover;border-radius:50%}
+.rekap{margin-top:20px;background:white;padding:10px;border-radius:8px}
+</style>
+</head>
+<body>
+<header>
+<h2>Absensi Digital Kelas X10</h2>
+<p>SMAN 1 Cibinong - Wali Kelas: Ibu Indry</p>
+</header>
+
+<div class="container">
+<table>
+<thead>
+<tr>
+<th>Foto</th>
+<th>Nama</th>
+<th>NISN</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="tabelSiswa"></tbody>
+</table>
+
+<div class="rekap">
+<h3>Rekap Kehadiran</h3>
+<p id="rekap"></p>
+</div>
+</div>
+
+<script>
+const siswa = [
+{nama:"Alya Putri Lestari",nisn:"0054321987",status:""},
+{nama:"Bima Arya Saputra",nisn:"0054321988",status:""},
+{nama:"Citra Maharani",nisn:"0054321989",status:""},
+{nama:"Dimas Pratama",nisn:"0054321990",status:""},
+{nama:"Eka Nur Azizah",nisn:"0054321991",status:""},
+{nama:"Fajar Ramadhan",nisn:"0054321992",status:""},
+{nama:"Gita Salsabila",nisn:"0054321993",status:""},
+{nama:"Hendra Wijaya",nisn:"0054321994",status:""},
+{nama:"Intan Permata Sari",nisn:"0054321995",status:""},
+{nama:"Joko Santoso",nisn:"0054321996",status:""},
+{nama:"Kania Lutfia",nisn:"0054321997",status:""},
+{nama:"Lukman Hakim",nisn:"0054321998",status:""},
+{nama:"Maya Sari Dewi",nisn:"0054321999",status:""},
+{nama:"Naufal Ilham",nisn:"0054330001",status:""},
+{nama:"Olivya Nadine",nisn:"0054330002",status:""},
+{nama:"Putra Mahendra",nisn:"0054330003",status:""},
+{nama:"Qory Aisyah",nisn:"0054330004",status:""},
+{nama:"Rizky Ananda",nisn:"0054330005",status:""},
+{nama:"Salsa Aprilia",nisn:"0054330006",status:""},
+{nama:"Teguh Santika",nisn:"0054330007",status:""}
+];
+
+const foto = {};
+
+function render(){
+let tbody = document.getElementById("tabelSiswa");
+tbody.innerHTML="";
+
+siswa.forEach((s,i)=>{
+let tr = document.createElement("tr");
+tr.innerHTML = `
+<td>${foto[i] ? `<img src='${foto[i]}'/>` : "-"}<br>
+<input type='file' onchange='uploadFoto(event,${i})' class='small'></td>
+<td>${s.nama}</td>
+<td>${s.nisn}</td>
+<td><b>${s.status || "Belum"}</b></td>
+<td>
+<button class='btn present' onclick="setStatus(${i},'Hadir')">Hadir</button>
+<button class='btn absent' onclick="setStatus(${i},'Alpha')">Alpha</button>
+<button class='btn sick' onclick="setStatus(${i},'Sakit')">Sakit</button>
+<button class='btn permit' onclick="setStatus(${i},'Izin')">Izin</button>
+</td>
+`;
+ tbody.appendChild(tr);
+});
+updateRekap();
+}
+
+function setStatus(i,status){
+siswa[i].status=status;
+render();
+}
+
+function uploadFoto(event,i){
+let file = event.target.files[0];
+let reader = new FileReader();
+reader.onload = function(e){
+foto[i]=e.target.result;
+render();
+}
+reader.readAsDataURL(file);
+}
+
+function updateRekap(){
+let hadir = siswa.filter(s=>s.status=="Hadir").length;
+let alpha = siswa.filter(s=>s.status=="Alpha").length;
+let sakit = siswa.filter(s=>s.status=="Sakit").length;
+let izin = siswa.filter(s=>s.status=="Izin").length;
+
+document.getElementById("rekap").innerHTML=
+`Hadir: ${hadir} | Alpha: ${alpha} | Sakit: ${sakit} | Izin: ${izin}`;
+}
+
+render();
+</script>
+</body>
+</html>
